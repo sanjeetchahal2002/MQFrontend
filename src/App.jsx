@@ -3,7 +3,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 import AuthForm from "./pages/AuthForm";
-import Main from "./pages/Content.jsx";
+import Content from "./pages/Content";
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
             path="/app"
             element={
               <ProtectedRoute>
-                <Main />
+                <Content />
               </ProtectedRoute>
             }
           />
