@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 
 import { useAuth } from "../contexts/AuthContext";
+
 import BarChart from "../components/BarChart";
 import LineChart from "../components/LineChart";
 import DateRangePicker from "../components/DateRange";
