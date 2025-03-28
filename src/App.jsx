@@ -1,26 +1,35 @@
-import { useState } from "react";
-import AuthForm from "./Components/AuthForm";
-import Main from "./Components/Main";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import AuthForm from "./pages/AuthForm";
+import Main from "./pages/Main";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    () => !!localStorage.getItem("token")
-  );
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("userData");
-    return storedUser ? JSON.parse(storedUser) : {};
-  });
   return (
-    <div>
-      {isLoggedIn ? (
-        <Main onLogout={() => setIsLoggedIn(false)} user={user} />
-      ) : (
-        <AuthForm
-          onLoginSuccess={() => setIsLoggedIn(true)}
-          setUser={setUser}
-        />
-      )}
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route index path="/" element={<AuthForm />} />
+          <Route
+            path="/app"
+            element={
+              <ProtectedRoute>
+                <Main />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <div style={{ textAlign: "center" }}>
+                <h1>🥲Page Not Found 🥲</h1>
+              </div>
+            }
+          ></Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

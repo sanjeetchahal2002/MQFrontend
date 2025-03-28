@@ -1,14 +1,17 @@
-import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
-import BarChart from "./BarChart";
-import LineChart from "./LineChart";
-import DateRangePicker from "./DateRange";
+import axios from "axios";
+
+import { useAuth } from "../contexts/AuthContext";
+import BarChart from "../components/BarChart";
+import LineChart from "../components/LineChart";
+import DateRangePicker from "../components/DateRange";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function Main({ onLogout, user }) {
+export default function Main() {
+  const { handleLogout: onLogout, user } = useAuth();
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
@@ -17,9 +20,7 @@ export default function Main({ onLogout, user }) {
   const [selecttDate, setSelectDate] = useState(null);
   const startDate = useRef(null);
   const filter = useRef({});
-  const navigate = useNavigate();
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -35,10 +36,10 @@ export default function Main({ onLogout, user }) {
           signal,
         });
         setData(result.data.data);
-        if (urlParams.size) {
-          const gender = urlParams.get("gender");
-          const ageGroup = urlParams.get("ageGroup");
-          const date = urlParams.get("date");
+        if (searchParams.size >= 1) {
+          const gender = searchParams.get("gender");
+          const ageGroup = searchParams.get("ageGroup");
+          const date = searchParams.get("date");
           filter.current = { gender, ageGroup, date };
         } else {
           filter.current = result.data.data.filters || {};
@@ -106,9 +107,7 @@ export default function Main({ onLogout, user }) {
         searchStringObj[key] = value;
       }
     });
-    const queryParams = new URLSearchParams(searchStringObj).toString();
-    console.log(searchStringObj);
-    navigate(`?${queryParams}`, { replace: true });
+    setSearchParams(searchStringObj);
   }
   async function resetFilters() {
     try {
@@ -123,7 +122,7 @@ export default function Main({ onLogout, user }) {
         setSelectAgeGroup("");
         setSelectDate(null);
         filter.current = {};
-        window.history.replaceState({}, "", window.location.pathname);
+        setSearchParams("");
       }
     } catch (err) {
       console.log(err);

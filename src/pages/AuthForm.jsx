@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
-import InputField from "./InputField";
+
+import { useAuth } from "../contexts/AuthContext";
+
+import InputField from "../components/InputField";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-function AuthForm({ onLoginSuccess, setUser }) {
+function AuthForm() {
   const [formType, setFormType] = useState("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -12,6 +17,9 @@ function AuthForm({ onLoginSuccess, setUser }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const { handleLogin: onLoginSuccess, setUser } = useAuth();
+  const navigate = useNavigate();
 
   async function handleAuth() {
     if (
@@ -50,6 +58,7 @@ function AuthForm({ onLoginSuccess, setUser }) {
         onLoginSuccess();
         setUser(result.data.userData);
         setError(null);
+        navigate("/app");
       }
     } catch (err) {
       console.log(err);
