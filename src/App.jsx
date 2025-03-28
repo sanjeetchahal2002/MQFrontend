@@ -3,7 +3,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 import AuthForm from "./pages/AuthForm";
-import Main from "./pages/Main";
+import Main from "./pages/Content.jsx";
 
 function App() {
   return (
